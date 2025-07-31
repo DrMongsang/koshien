@@ -1,0 +1,711 @@
+/* リセットCSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Hiragino Sans', 'Yu Gothic UI', 'Meiryo', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: white;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+/* ヘッダー */
+.header {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+    animation: float 20s infinite linear;
+}
+
+@keyframes float {
+    0% { transform: translateX(-50px) translateY(-50px); }
+    100% { transform: translateX(50px) translateY(50px); }
+}
+
+.header h1 {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    position: relative;
+    z-index: 1;
+}
+
+.countdown {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 10px 15px;
+    margin-top: 15px;
+    font-weight: bold;
+    position: relative;
+    z-index: 1;
+}
+
+/* ルール説明セクション */
+.rules-section {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 15px 20px;
+}
+
+.rules-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.rules-header h2 {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.toggle-rules {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.toggle-rules:hover {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.rules-content {
+    margin-top: 15px;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+    }
+}
+
+.rule-item {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rule-item h3 {
+    font-size: 1.1rem;
+    color: #2c3e50;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 5px;
+}
+
+.rule-item ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.rule-item li {
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+    color: #495057;
+    font-size: 0.9rem;
+}
+
+.rule-item li::before {
+    content: '•';
+    color: #ff6b6b;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.rule-item strong {
+    color: #2c3e50;
+}
+
+/* メインコンテンツ */
+.main {
+    padding: 20px;
+}
+
+.prediction-section h2,
+.predictions-list h2,
+.results-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #2c3e50;
+    text-align: center;
+}
+
+/* タブ */
+.input-method-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: #667eea;
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.tab-btn:hover:not(.active) {
+    background: #e9ecef;
+}
+
+/* 地域グリッド */
+.region-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.region-card {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    color: white;
+    padding: 20px 15px;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+}
+
+.region-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(116, 185, 255, 0.4);
+}
+
+.region-card:active {
+    transform: translateY(-1px);
+}
+
+/* 都道府県・学校リスト */
+.prefecture-list,
+.school-list {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.prefecture-item,
+.school-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.prefecture-item:hover,
+.school-item:hover {
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.school-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.school-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.school-appearance {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    background: #ecf0f1;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+/* 検索ボックス */
+.search-box {
+    position: relative;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 25px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 100;
+    margin-top: 10px;
+}
+
+/* 全学校リスト */
+.all-schools-list {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+/* 日本地図（簡易版） */
+.japan-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 10px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.prefecture-btn {
+    padding: 12px 8px;
+    border: none;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.prefecture-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+}
+
+/* 選択された学校 */
+.selected-school {
+    background: linear-gradient(135deg, #00b894, #00a085);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.school-card {
+    background: rgba(255,255,255,0.2);
+    padding: 20px;
+    border-radius: 15px;
+    margin: 15px 0;
+}
+
+.school-card h4 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+}
+
+.school-card p {
+    opacity: 0.9;
+}
+
+/* ボタン */
+.submit-btn,
+.reset-btn,
+.revenge-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px 0;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #fd79a8, #e84393);
+    color: white;
+}
+
+.reset-btn {
+    background: rgba(255,255,255,0.3);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+.revenge-btn {
+    background: linear-gradient(135deg, #ff7675, #d63031);
+    color: white;
+}
+
+.submit-btn:hover,
+.revenge-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.reset-btn:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+/* 予想一覧 */
+.predictions-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.prediction-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-left: 5px solid #667eea;
+}
+
+.prediction-user {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+}
+
+.prediction-school {
+    font-size: 1.1rem;
+    color: #667eea;
+    font-weight: 500;
+}
+
+/* 結果発表 */
+.winner-announcement {
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    border-radius: 20px;
+    margin-bottom: 25px;
+}
+
+.winner-announcement h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #2d3436;
+}
+
+.score-board {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.score-item.winner {
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    border: 2px solid #f39c12;
+}
+
+.score-item.revenge {
+    background: linear-gradient(135deg, #ff7675, #d63031);
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.badge.crown {
+    background: #f39c12;
+    color: white;
+}
+
+.badge.fire {
+    background: #e74c3c;
+    color: white;
+}
+
+.score {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* リベンジマッチ */
+.revenge-match {
+    background: linear-gradient(135deg, #ff7675, #d63031);
+    color: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-top: 25px;
+    text-align: center;
+}
+
+.final-teams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.final-team {
+    background: rgba(255,255,255,0.2);
+    padding: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.final-team:hover {
+    background: rgba(255,255,255,0.3);
+    border-color: white;
+}
+
+.final-team.selected {
+    background: rgba(255,255,255,0.4);
+    border-color: white;
+}
+
+/* モーダル */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+    width: 300px;
+}
+
+.modal-content h3 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.modal-content input:focus {
+    border-color: #667eea;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modal-content button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+/* 管理者パネル */
+.admin-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2c3e50;
+    color: white;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.admin-panel button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: #34495e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.admin-panel button:hover {
+    background: #4a6741;
+}
+
+/* レスポンシブ */
+@media (max-width: 480px) {
+    .container {
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .main {
+        padding: 15px;
+    }
+    
+    .region-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .tab-btn {
+        font-size: 0.8rem;
+        padding: 10px 6px;
+    }
+}
+
+/* アニメーション */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.input-method {
+    animation: slideIn 0.3s ease;
+}
+
+/* スクロールバー */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

@@ -1,0 +1,97 @@
+{
+  "regions": [
+    {
+      "region": "北海道",
+      "teams": [
+        { "pref": "北北海道", "school": "旭川志峯", "appearance": "3年ぶり11回目" },
+        { "pref": "南北海道", "school": "北海", "appearance": "2年ぶり41回目" }
+      ]
+    },
+    {
+      "region": "東北",
+      "teams": [
+        { "pref": "青森", "school": "弘前学院聖愛", "appearance": "4年ぶり3回目" },
+        { "pref": "岩手", "school": "花巻東", "appearance": "3年連続13回目" },
+        { "pref": "秋田", "school": "金足農", "appearance": "2年連続8回目" },
+        { "pref": "山形", "school": "日大山形", "appearance": "2年ぶり20回目" },
+        { "pref": "宮城", "school": "仙台育英", "appearance": "2年ぶり31回目" },
+        { "pref": "福島", "school": "聖光学院", "appearance": "4年連続20回目" }
+      ]
+    },
+    {
+      "region": "関東",
+      "teams": [
+        { "pref": "茨城", "school": "明秀日立", "appearance": "3年ぶり2回目" },
+        { "pref": "栃木", "school": "青藍泰斗", "appearance": "35年ぶり2回目" },
+        { "pref": "群馬", "school": "健大高崎", "appearance": "2年連続5回目" },
+        { "pref": "埼玉", "school": "叡明", "appearance": "初出場" },
+        { "pref": "千葉", "school": "市立船橋", "appearance": "3年ぶり7回目" },
+        { "pref": "東東京", "school": "関東第一", "appearance": "2年連続10回目" },
+        { "pref": "西東京", "school": "日大三", "appearance": "2年ぶり20回目" },
+        { "pref": "神奈川", "school": "横浜", "appearance": "3年ぶり21回目" }
+      ]
+    },
+    {
+      "region": "北信越",
+      "teams": [
+        { "pref": "長野", "school": "松商学園", "appearance": "4年ぶり38回目" },
+        { "pref": "新潟", "school": "中越", "appearance": "7年ぶり12回目" },
+        { "pref": "富山", "school": "未来富山", "appearance": "初出場" },
+        { "pref": "石川", "school": "小松大谷", "appearance": "2年連続4回目" },
+        { "pref": "福井", "school": "敦賀気比", "appearance": "3年ぶり12回目" }
+      ]
+    },
+    {
+      "region": "東海",
+      "teams": [
+        { "pref": "静岡", "school": "聖隷クリストファー", "appearance": "初出場" },
+        { "pref": "愛知", "school": "豊橋中央", "appearance": "初出場" },
+        { "pref": "岐阜", "school": "県岐阜商", "appearance": "3年ぶり31回目" }
+      ]
+    },
+    {
+      "region": "近畿",
+      "teams": [
+        { "pref": "三重", "school": "津田学園", "appearance": "6年ぶり3回目" },
+        { "pref": "滋賀", "school": "綾羽", "appearance": "初出場" },
+        { "pref": "京都", "school": "京都国際", "appearance": "2年連続4回目" },
+        { "pref": "奈良", "school": "天理", "appearance": "3年ぶり30回目" },
+        { "pref": "和歌山", "school": "智辯和歌山", "appearance": "2年連続28回目" },
+        { "pref": "大阪", "school": "東大阪大柏原", "appearance": "14年ぶり2回目" },
+        { "pref": "兵庫", "school": "東洋大姫路", "appearance": "14年ぶり13回目" }
+      ]
+    },
+    {
+      "region": "中国",
+      "teams": [
+        { "pref": "岡山", "school": "岡山学芸館", "appearance": "2年連続4回目" },
+        { "pref": "鳥取", "school": "鳥取城北", "appearance": "2年連続7回目" },
+        { "pref": "広島", "school": "広陵", "appearance": "3年連続26回目" },
+        { "pref": "島根", "school": "開星", "appearance": "8年ぶり11回目" },
+        { "pref": "山口", "school": "高川学園", "appearance": "4年ぶり3回目" }
+      ]
+    },
+    {
+      "region": "四国",
+      "teams": [
+        { "pref": "香川", "school": "尽誠学園", "appearance": "9年ぶり12回目" },
+        { "pref": "愛媛", "school": "済美", "appearance": "7年ぶり7回目" },
+        { "pref": "徳島", "school": "鳴門", "appearance": "3年ぶり15回目" },
+        { "pref": "高知", "school": "高知中央", "appearance": "2年ぶり2回目" }
+      ]
+    },
+    {
+      "region": "九州・沖縄",
+      "teams": [
+        { "pref": "福岡", "school": "西日本短大付", "appearance": "2年連続8回目" },
+        { "pref": "佐賀", "school": "佐賀北", "appearance": "6年ぶり6回目" },
+        { "pref": "長崎", "school": "創成館", "appearance": "3年連続5回目" },
+        { "pref": "熊本", "school": "東海大熊本星翔", "appearance": "2年ぶり4回目" },
+        { "pref": "大分", "school": "明豊", "appearance": "5年連続11回目" },
+        { "pref": "宮崎", "school": "宮崎商", "appearance": "2年連続7回目" },
+        { "pref": "鹿児島", "school": "神村学園", "appearance": "3年連続8回目" },
+        { "pref": "沖縄", "school": "沖縄尚学", "appearance": "2年ぶり11回目" }
+      ]
+    }
+  ]
+}

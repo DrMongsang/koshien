@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>甲子園王 2025 優勝校予想バトル</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>⚾ 甲子園王 2025</h1>
+            <p class="subtitle">優勝校予想バトル</p>
+            <div class="countdown" id="countdown"></div>
+        </header>
+
+        <!-- ルール説明セクション -->
+        <section class="rules-section" id="rulesSection">
+            <div class="rules-header">
+                <h2>📋 ルール説明</h2>
+                <button class="toggle-rules" id="toggleRules">▼ 詳細を見る</button>
+            </div>
+            <div class="rules-content" id="rulesContent" style="display: none;">
+                <div class="rule-item">
+                    <h3>🎯 予想方法</h3>
+                    <ul>
+                        <li><strong>地域選択：</strong>地域→都道府県→代表校の順で選択</li>
+                        <li><strong>検索：</strong>学校名の一部を入力して検索</li>
+                        <li><strong>一覧：</strong>全49代表校から直接選択</li>
+                        <li><strong>推し県：</strong>日本地図から都道府県を選択</li>
+                    </ul>
+                </div>
+                <div class="rule-item">
+                    <h3>🏆 得点システム</h3>
+                    <ul>
+                        <li><strong>優勝予想的中：</strong>100ポイント</li>
+                        <li><strong>決勝進出予想的中：</strong>50ポイント</li>
+                        <li><strong>ベスト4予想的中：</strong>25ポイント</li>
+                        <li><strong>ベスト8予想的中：</strong>10ポイント</li>
+                    </ul>
+                </div>
+                <div class="rule-item">
+                    <h3>🔥 リベンジマッチ</h3>
+                    <ul>
+                        <li>決勝進出が決定した2校から再予想可能</li>
+                        <li>リベンジマッチでの的中は50ポイント</li>
+                        <li>通常予想とリベンジ予想の合計で順位決定</li>
+                    </ul>
+                </div>
+                <div class="rule-item">
+                    <h3>⚠️ 注意事項</h3>
+                    <ul>
+                        <li>予想は大会開始前までに行ってください</li>
+                        <li>一度提出した予想は変更できません</li>
+                        <li>同点の場合は予想提出時刻の早い順で順位決定</li>
+                        <li>不正行為や複数アカウントでの参加は禁止</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <main class="main">
+            <!-- 予想入力セクション -->
+            <section class="prediction-section" id="predictionSection">
+                <h2>🎯 あなたの優勝予想</h2>
+                
+                <!-- 予想方式選択 -->
+                <div class="input-method-tabs">
+                    <button class="tab-btn active" data-method="tree">地域選択</button>
+                    <button class="tab-btn" data-method="search">検索</button>
+                    <button class="tab-btn" data-method="list">一覧</button>
+                    <button class="tab-btn" data-method="favorite">推し県</button>
+                </div>
+
+                <!-- 地域→都道府県→代表校選択 -->
+                <div class="input-method" id="treeMethod">
+                    <div class="region-grid" id="regionGrid"></div>
+                    <div class="prefecture-list" id="prefectureList" style="display: none;"></div>
+                    <div class="school-list" id="schoolList" style="display: none;"></div>
+                </div>
+
+                <!-- フリーワード検索 -->
+                <div class="input-method" id="searchMethod" style="display: none;">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="学校名を入力してください（部分一致）">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                </div>
+
+                <!-- 全体リスト -->
+                <div class="input-method" id="listMethod" style="display: none;">
+                    <div class="all-schools-list" id="allSchoolsList"></div>
+                </div>
+
+                <!-- 推し都道府県 -->
+                <div class="input-method" id="favoriteMethod" style="display: none;">
+                    <div class="japan-map" id="japanMap"></div>
+                </div>
+
+                <!-- 選択された学校表示 -->
+                <div class="selected-school" id="selectedSchool" style="display: none;">
+                    <h3>選択中の学校</h3>
+                    <div class="school-card" id="schoolCard"></div>
+                    <button class="submit-btn" id="submitPrediction">この学校で予想する</button>
+                    <button class="reset-btn" id="resetSelection">選択をリセット</button>
+                </div>
+            </section>
+
+            <!-- 予想一覧セクション -->
+            <section class="predictions-list" id="predictionsList" style="display: none;">
+                <h2>📊 みんなの予想</h2>
+                <div class="predictions-grid" id="predictionsGrid"></div>
+            </section>
+
+            <!-- 結果発表セクション -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <h2>🏆 結果発表</h2>
+                <div class="winner-announcement" id="winnerAnnouncement"></div>
+                <div class="score-board" id="scoreBoard"></div>
+                
+                <!-- リベンジマッチ -->
+                <div class="revenge-match" id="revengeMatch" style="display: none;">
+                    <h3>🔥 リベンジマッチ</h3>
+                    <p>決勝進出校から選んでください</p>
+                    <div class="final-teams" id="finalTeams"></div>
+                    <button class="revenge-btn" id="submitRevenge">リベンジ予想する</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- ユーザー登録モーダル -->
+        <div class="modal" id="userModal">
+            <div class="modal-content">
+                <h3>ユーザー登録</h3>
+                <input type="text" id="userName" placeholder="ニックネームを入力">
+                <button id="registerUser">参加する</button>
+            </div>
+        </div>
+
+        <!-- 管理者パネル -->
+        <div class="admin-panel" id="adminPanel" style="display: none;">
+            <h3>🔧 管理者パネル</h3>
+            <button id="lockPredictions">予想をロック</button>
+            <button id="setFinalTeams">決勝進出校設定</button>
+            <button id="announceWinner">優勝校発表</button>
+            <button id="resetAll">全データリセット</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
