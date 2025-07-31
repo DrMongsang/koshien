@@ -62,10 +62,8 @@ function initializeApp() {
     initializeJapanMap();
     updateUI();
     
-    // 管理者パネル表示（開発用）
-    if (currentUser === 'admin') {
-        document.getElementById('adminPanel').style.display = 'block';
-    }
+    // 管理者パネル表示（常時表示）
+    document.getElementById('adminPanel').style.display = 'block';
 }
 
 // イベントリスナー設定
@@ -101,6 +99,7 @@ function setupEventListeners() {
     document.getElementById('deletePrediction').addEventListener('click', deleteCurrentPrediction);
     
     // ナビゲーションボタン
+    document.getElementById('backToTopBtn').addEventListener('click', backToTop);
     document.getElementById('showPredictionsBtn').addEventListener('click', showPredictionsList);
     document.getElementById('showParticipantsBtn').addEventListener('click', showParticipants);
     document.getElementById('showAllPredictionsBtn').addEventListener('click', showAllPredictions);
@@ -113,6 +112,9 @@ function setupEventListeners() {
 
     // リベンジマッチ
     document.getElementById('submitRevenge').addEventListener('click', submitRevenge);
+    
+    // 管理者モード
+    setupAdminEventListeners();
 }
 
 // カウントダウン更新
@@ -703,11 +705,19 @@ function filterPredictions(filter) {
 
 // 全セクション非表示
 function hideAllSections() {
-    document.getElementById('predictionSection').style.display = 'none';
     document.getElementById('predictionsList').style.display = 'none';
     document.getElementById('participantsSection').style.display = 'none';
     document.getElementById('allPredictionsSection').style.display = 'none';
     document.getElementById('resultsSection').style.display = 'none';
+}
+
+// トップに戻る機能
+function backToTop() {
+    hideAllSections();
+    // メイン予想セクションを表示
+    document.getElementById('predictionSection').style.display = 'block';
+    // ページトップにスクロール
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // 結果表示
@@ -899,3 +909,132 @@ function resetAll() {
         location.reload();
     }
 }
+
+// 管理者モード機能
+const ADMIN_PASSWORD = 'koshien2025admin'; // 管理者パスワード
+let isAdminMode = false;
+
+// 管理者モードボタンのイベントリスナーを追加
+function setupAdminEventListeners() {
+    document.getElementById('adminMode').addEventListener('click', showAdminAuth);
+    document.getElementById('adminLogin').addEventListener('click', authenticateAdmin);
+    document.getElementById('cancelAdminLogin').addEventListener('click', hideAdminAuth);
+    document.getElementById('editAllPredictions').addEventListener('click', showAllPredictionsForEdit);
+    document.getElementById('deleteAllPredictions').addEventListener('click', deleteAllPredictions);
+    document.getElementById('exitAdminMode').addEventListener('click', exitAdminMode);
+}
+
+// 管理者認証画面を表示
+function showAdminAuth() {
+    document.getElementById('adminAuthModal').style.display = 'block';
+    document.getElementById('adminPassword').focus();
+}
+
+// 管理者認証画面を非表示
+function hideAdminAuth() {
+    document.getElementById('adminAuthModal').style.display = 'none';
+    document.getElementById('adminPassword').value = '';
+}
+
+// 管理者認証
+function authenticateAdmin() {
+    const password = document.getElementById('adminPassword').value;
+    if (password === ADMIN_PASSWORD) {
+        isAdminMode = true;
+        hideAdminAuth();
+        showAdminModePanel();
+        alert('管理者モードにログインしました');
+    } else {
+        alert('パスワードが間違っています');
+        document.getElementById('adminPassword').value = '';
+    }
+}
+
+// 管理者モードパネルを表示
+function showAdminModePanel() {
+    document.getElementById('adminModePanel').style.display = 'block';
+    showAllPredictionsForEdit();
+}
+
+// 管理者モード終了
+function exitAdminMode() {
+    isAdminMode = false;
+    document.getElementById('adminModePanel').style.display = 'none';
+    alert('管理者モードを終了しました');
+}
+
+// 全予想を編集用に表示
+function showAllPredictionsForEdit() {
+    const adminPredictionsList = document.getElementById('adminPredictionsList');
+    
+    if (predictions.length === 0) {
+        adminPredictionsList.innerHTML = '<p style="color: #fff; text-align: center; font-size: 0.7rem;">予想データがありません</p>';
+        return;
+    }
+
+    let html = '';
+    predictions.forEach((prediction, index) => {
+        html += `
+            <div class="admin-prediction-item" data-index="${index}">
+                <h4>👤 ${prediction.user}</h4>
+                <p>🏫 予想校: ${prediction.school}</p>
+                <p>📅 予想日時: ${new Date(prediction.timestamp).toLocaleString('ja-JP')}</p>
+                ${prediction.revengeSchool ? `<p>🔥 リベンジ予想: ${prediction.revengeSchool}</p>` : ''}
+                <div class="admin-prediction-actions">
+                    <button onclick="editPrediction(${index})">編集</button>
+                    <button class="delete" onclick="deletePrediction(${index})">削除</button>
+                </div>
+            </div>
+        `;
+    });
+    
+    adminPredictionsList.innerHTML = html;
+}
+
+// 個別予想を編集
+function editPrediction(index) {
+    const prediction = predictions[index];
+    const newSchool = prompt(`${prediction.user}さんの予想校を変更してください\n現在: ${prediction.school}`, prediction.school);
+    
+    if (newSchool && newSchool.trim() !== '' && newSchool !== prediction.school) {
+        predictions[index].school = newSchool.trim();
+        predictions[index].editedBy = 'admin';
+        predictions[index].editedAt = new Date().toISOString();
+        
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+        showAllPredictionsForEdit();
+        alert(`${prediction.user}さんの予想を「${newSchool}」に変更しました`);
+    }
+}
+
+// 個別予想を削除
+function deletePrediction(index) {
+    const prediction = predictions[index];
+    if (confirm(`${prediction.user}さんの予想を削除しますか？\n予想校: ${prediction.school}`)) {
+        predictions.splice(index, 1);
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+        showAllPredictionsForEdit();
+        alert(`${prediction.user}さんの予想を削除しました`);
+    }
+}
+
+// 全予想を削除
+function deleteAllPredictions() {
+    if (confirm('全ての予想データを削除しますか？\nこの操作は取り消せません。')) {
+        predictions = [];
+        localStorage.setItem('predictions', JSON.stringify(predictions));
+        showAllPredictionsForEdit();
+        alert('全ての予想データを削除しました');
+    }
+}
+
+// パスワード入力でEnterキーを押した時の処理
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        const adminPasswordInput = document.getElementById('adminPassword');
+        if (document.getElementById('adminAuthModal').style.display === 'block' && 
+            document.activeElement === adminPasswordInput) {
+            authenticateAdmin();
+        }
+    }
+});
