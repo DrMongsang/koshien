@@ -1282,23 +1282,54 @@ body {
     .container {
         margin: 0;
         border-radius: 0;
+        border: 2px solid #00ff00;
+        max-width: 100%;
+        width: 100%;
     }
     
     .header h1 {
-        font-size: 1.8rem;
+        font-size: 1.2rem;
+    }
+    
+    .subtitle {
+        font-size: 0.6rem;
     }
     
     .main {
-        padding: 15px;
+        padding: 10px;
     }
     
     .region-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
     }
     
     .tab-btn {
-        font-size: 0.8rem;
-        padding: 10px 6px;
+        font-size: 0.7rem;
+        padding: 8px 4px;
+    }
+    
+    .btn {
+        font-size: 0.7rem;
+        padding: 8px 12px;
+    }
+    
+    .admin-panel {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        width: auto;
+        max-width: 200px;
+    }
+    
+    .admin-panel h3 {
+        font-size: 0.6rem;
+    }
+    
+    .admin-panel .btn {
+        font-size: 0.6rem;
+        padding: 6px 8px;
+        margin: 2px 0;
     }
 }
 
