@@ -51,7 +51,7 @@
                     <h3>⚠️ 注意事項</h3>
                     <ul>
                         <li>予想は大会開始前までに行ってください</li>
-                        <li>一度提出した予想は変更できません</li>
+                        <li>予想は大会開始前まで何度でも変更・削除可能です</li>
                         <li>同点の場合は予想提出時刻の早い順で順位決定</li>
                         <li>不正行為や複数アカウントでの参加は禁止</li>
                     </ul>
@@ -63,6 +63,16 @@
             <!-- 予想入力セクション -->
             <section class="prediction-section" id="predictionSection">
                 <h2>🎯 あなたの優勝予想</h2>
+                
+                <!-- 現在の予想表示 -->
+                <div class="current-prediction" id="currentPrediction" style="display: none;">
+                    <h3>📝 現在の予想</h3>
+                    <div class="current-prediction-card" id="currentPredictionCard"></div>
+                    <div class="prediction-actions">
+                        <button class="edit-btn" id="editPrediction">予想を変更する</button>
+                        <button class="delete-btn" id="deletePrediction">予想を削除する</button>
+                    </div>
+                </div>
                 
                 <!-- 予想方式選択 -->
                 <div class="input-method-tabs">
@@ -106,10 +116,37 @@
                 </div>
             </section>
 
+            <!-- ナビゲーションセクション -->
+            <section class="navigation-section" id="navigationSection">
+                <div class="nav-buttons">
+                    <button class="nav-btn" id="showPredictionsBtn">📊 みんなの予想</button>
+                    <button class="nav-btn" id="showParticipantsBtn">👥 参加者一覧</button>
+                    <button class="nav-btn" id="showAllPredictionsBtn" style="display: none;">📋 全予想公開</button>
+                </div>
+            </section>
+
             <!-- 予想一覧セクション -->
             <section class="predictions-list" id="predictionsList" style="display: none;">
                 <h2>📊 みんなの予想</h2>
                 <div class="predictions-grid" id="predictionsGrid"></div>
+            </section>
+
+            <!-- 参加者一覧セクション -->
+            <section class="participants-section" id="participantsSection" style="display: none;">
+                <h2>👥 参加者一覧</h2>
+                <div class="participants-stats" id="participantsStats"></div>
+                <div class="participants-list" id="participantsList"></div>
+            </section>
+
+            <!-- 全予想公開セクション -->
+            <section class="all-predictions-section" id="allPredictionsSection" style="display: none;">
+                <h2>📋 全参加者の予想</h2>
+                <div class="prediction-filter" id="predictionFilter">
+                    <button class="filter-btn active" data-filter="all">全て</button>
+                    <button class="filter-btn" data-filter="region">地域別</button>
+                    <button class="filter-btn" data-filter="school">学校別</button>
+                </div>
+                <div class="all-predictions-grid" id="allPredictionsGrid"></div>
             </section>
 
             <!-- 結果発表セクション -->

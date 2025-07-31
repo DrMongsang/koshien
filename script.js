@@ -96,6 +96,15 @@ function setupEventListeners() {
     // ユーザー登録
     document.getElementById('registerUser').addEventListener('click', registerUser);
 
+    // 予想編集・削除ボタン
+    document.getElementById('editPrediction').addEventListener('click', editCurrentPrediction);
+    document.getElementById('deletePrediction').addEventListener('click', deleteCurrentPrediction);
+    
+    // ナビゲーションボタン
+    document.getElementById('showPredictionsBtn').addEventListener('click', showPredictionsList);
+    document.getElementById('showParticipantsBtn').addEventListener('click', showParticipants);
+    document.getElementById('showAllPredictionsBtn').addEventListener('click', showAllPredictions);
+
     // 管理者機能
     document.getElementById('lockPredictions').addEventListener('click', lockPredictions);
     document.getElementById('setFinalTeams').addEventListener('click', setFinalTeams);
@@ -125,6 +134,9 @@ function updateCountdown() {
     const targetName = gameState.phase === 'prediction' ? '本抽選会まで' : '大会開始まで';
     document.getElementById('countdown').textContent = 
         `${targetName} ${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+    
+    // 予想締切時間も更新
+    updatePredictionDeadline();
 }
 
 // ユーザーモーダル表示
@@ -193,6 +205,20 @@ function showPrefectures(region) {
 
 // 学校選択
 function selectSchool(team) {
+    // 既存の予想をチェック
+    const existingPrediction = predictions.find(p => p.user === currentUser);
+    const now = new Date();
+    const deadline = IMPORTANT_DATES.tournamentStart;
+    const canEdit = now < deadline;
+    
+    // 既存の予想があり、締め切り前の場合は確認ダイアログを表示
+    if (existingPrediction && canEdit) {
+        const confirmMessage = `あなたは「${existingPrediction.school}」を予想済みです。変更しますか？`;
+        if (!confirm(confirmMessage)) {
+            return; // キャンセルされた場合は処理を中止
+        }
+    }
+    
     selectedSchool = {
         region: findRegionByTeam(team),
         pref: team.pref,
@@ -360,35 +386,183 @@ function resetSelection() {
 // UI更新
 function updateUI() {
     // 現在のフェーズに応じてセクション表示
+    hideAllSections();
+    
     const predictionSection = document.getElementById('predictionSection');
-    const predictionsList = document.getElementById('predictionsList');
-    const resultsSection = document.getElementById('resultsSection');
+    const allPredictionsBtn = document.getElementById('showAllPredictionsBtn');
+    
+    // 締め切り後に全予想公開ボタンを表示
+    const now = new Date();
+    const deadline = IMPORTANT_DATES.tournamentStart;
+    if (now >= deadline) {
+        allPredictionsBtn.style.display = 'inline-block';
+    }
 
     switch (gameState.phase) {
         case 'prediction':
             predictionSection.style.display = 'block';
-            predictionsList.style.display = 'none';
-            resultsSection.style.display = 'none';
+            // 現在の予想があれば表示
+            if (currentUser) {
+                showCurrentPrediction();
+            }
             break;
         case 'locked':
-            predictionSection.style.display = 'none';
-            predictionsList.style.display = 'block';
-            resultsSection.style.display = 'none';
             showPredictionsList();
             break;
         case 'final':
         case 'revenge':
-            predictionSection.style.display = 'none';
-            predictionsList.style.display = 'none';
-            resultsSection.style.display = 'block';
             showResults();
             break;
+    }
+    
+    // 現在の予想を表示
+    showCurrentPrediction();
+}
+
+// 現在の予想表示
+function showCurrentPrediction() {
+    const currentPredictionDiv = document.getElementById('currentPrediction');
+    const currentPredictionCard = document.getElementById('currentPredictionCard');
+    
+    if (!currentUser) {
+        currentPredictionDiv.style.display = 'none';
+        return;
+    }
+    
+    const userPrediction = predictions.find(p => p.user === currentUser);
+    
+    if (userPrediction) {
+        currentPredictionDiv.style.display = 'block';
+        
+        const predictionTime = new Date(userPrediction.timestamp).toLocaleString('ja-JP');
+        const now = new Date();
+        const deadline = IMPORTANT_DATES.tournamentStart;
+        const canEdit = now < deadline;
+        
+        // 締め切り前後で表示を変更
+        const editMessage = canEdit ? 
+            `<div style="background: #e8f5e8; padding: 10px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #4caf50;">
+                <div style="font-weight: bold; color: #2e7d32; margin-bottom: 5px;">✅ 変更可能</div>
+                <div style="color: #388e3c; font-size: 0.9em;">締め切り前のため、予想の変更・削除が可能です</div>
+            </div>` :
+            `<div style="background: #ffebee; padding: 10px; border-radius: 8px; margin-top: 15px; border-left: 4px solid #f44336;">
+                <div style="font-weight: bold; color: #c62828; margin-bottom: 5px;">🔒 変更不可</div>
+                <div style="color: #d32f2f; font-size: 0.9em;">締め切り後のため、予想の変更はできません</div>
+            </div>`;
+        
+        currentPredictionCard.innerHTML = `
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div style="font-size: 1.5em; font-weight: bold; color: #1976d2; margin-bottom: 8px;">🏆 あなたの優勝予想</div>
+                <div style="font-size: 2em; font-weight: bold; color: #d32f2f; background: linear-gradient(135deg, #fff3e0, #fce4ec); padding: 15px; border-radius: 10px; border: 3px solid #ff9800;">${userPrediction.school}</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                <div style="background: #e3f2fd; padding: 10px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: bold; color: #1976d2;">都道府県</div>
+                    <div style="color: #666;">${userPrediction.pref}</div>
+                </div>
+                <div style="background: #f3e5f5; padding: 10px; border-radius: 8px; text-align: center;">
+                    <div style="font-weight: bold; color: #7b1fa2;">地域</div>
+                    <div style="color: #666;">${userPrediction.region}</div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 8px;">
+                <div style="font-size: 0.9em; color: #666;">📅 予想日時: ${predictionTime}</div>
+            </div>
+            ${editMessage}
+        `;
+        
+        // 編集・削除ボタンの表示制御
+        const editBtn = document.getElementById('editPrediction');
+        const deleteBtn = document.getElementById('deletePrediction');
+        if (editBtn && deleteBtn) {
+            editBtn.style.display = canEdit ? 'inline-block' : 'none';
+            deleteBtn.style.display = canEdit ? 'inline-block' : 'none';
+        }
+    } else {
+        // 予想がない場合の表示
+        currentPredictionDiv.style.display = 'block';
+        currentPredictionCard.innerHTML = `
+            <div style="text-align: center; padding: 30px;">
+                <div style="font-size: 3em; margin-bottom: 15px;">🤔</div>
+                <div style="font-size: 1.3em; font-weight: bold; color: #ff9800; margin-bottom: 10px;">まだ予想していません</div>
+                <div style="color: #666; margin-bottom: 20px;">下記の方法から優勝校を予想してください</div>
+                <div style="background: linear-gradient(135deg, #fff3e0, #fce4ec); padding: 15px; border-radius: 10px; border-left: 4px solid #ff9800;">
+                    <div style="font-weight: bold; color: #e65100; margin-bottom: 8px;">⚠️ 予想締切まで</div>
+                    <div id="predictionDeadline" style="font-size: 1.1em; color: #d84315;"></div>
+                </div>
+            </div>
+        `;
+        
+        // 締切までの時間を表示
+        updatePredictionDeadline();
+    }
+}
+
+// 予想締切時間の更新
+function updatePredictionDeadline() {
+    const deadlineDiv = document.getElementById('predictionDeadline');
+    if (!deadlineDiv) return;
+    
+    const now = new Date();
+    const deadline = IMPORTANT_DATES.tournamentStart;
+    const timeDiff = deadline - now;
+    
+    if (timeDiff > 0) {
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        
+        deadlineDiv.innerHTML = `あと ${days}日 ${hours}時間 ${minutes}分`;
+    } else {
+        deadlineDiv.innerHTML = '予想受付終了';
+    }
+}
+
+// 予想編集
+function editCurrentPrediction() {
+    const userPrediction = predictions.find(p => p.user === currentUser);
+    if (!userPrediction) return;
+    
+    // 現在の予想を選択状態にセット
+    selectedSchool = {
+        school: userPrediction.school,
+        pref: userPrediction.pref,
+        region: userPrediction.region
+    };
+    
+    // 選択された学校を表示
+    showSelectedSchool();
+    
+    // 予想入力セクションにスクロール
+    document.querySelector('.input-method-tabs').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 予想削除
+function deleteCurrentPrediction() {
+    if (!currentUser) return;
+    
+    if (confirm('予想を削除してもよろしいですか？')) {
+        const index = predictions.findIndex(p => p.user === currentUser);
+        if (index >= 0) {
+            predictions.splice(index, 1);
+            localStorage.setItem('predictions', JSON.stringify(predictions));
+            alert('予想を削除しました');
+            updateUI();
+        }
     }
 }
 
 // 予想一覧表示
 function showPredictionsList() {
+    const section = document.getElementById('predictionsList');
     const grid = document.getElementById('predictionsGrid');
+    
+    // 他のセクションを非表示
+    hideAllSections();
+    
+    // 予想一覧を表示
+    section.style.display = 'block';
+    
     grid.innerHTML = '';
 
     predictions.forEach(prediction => {
@@ -403,6 +577,137 @@ function showPredictionsList() {
         `;
         grid.appendChild(card);
     });
+}
+
+// 参加者一覧表示
+function showParticipants() {
+    const section = document.getElementById('participantsSection');
+    const statsDiv = document.getElementById('participantsStats');
+    const listDiv = document.getElementById('participantsList');
+    
+    // 他のセクションを非表示
+    hideAllSections();
+    
+    // 参加者セクションを表示
+    section.style.display = 'block';
+    
+    // 参加者統計を表示
+    const totalParticipants = predictions.length;
+    const uniqueSchools = new Set(predictions.map(p => p.school)).size;
+    const prefectures = new Set(predictions.map(p => p.pref)).size;
+    
+    statsDiv.innerHTML = `
+        <div class="stat-item">
+            <span class="stat-number">${totalParticipants}</span>
+            <div class="stat-label">総参加者数</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">${uniqueSchools}</span>
+            <div class="stat-label">予想された学校数</div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">${prefectures}</span>
+            <div class="stat-label">都道府県数</div>
+        </div>
+    `;
+    
+    // 参加者リストを表示
+    listDiv.innerHTML = predictions.map((p, index) => {
+        const joinDate = new Date(p.timestamp).toLocaleDateString('ja-JP');
+        return `
+            <div class="participant-card">
+                <div class="participant-name">${p.user}</div>
+                <div class="participant-info">
+                    予想校: ${p.school}<br>
+                    都道府県: ${p.pref}<br>
+                    参加日: ${joinDate}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 全予想公開表示（締め切り後のみ）
+function showAllPredictions() {
+    // 締め切り時刻をチェック
+    const now = new Date();
+    const deadline = IMPORTANT_DATES.tournamentStart;
+    
+    if (now < deadline) {
+        alert('全予想の公開は大会開始後に行われます。');
+        return;
+    }
+    
+    const section = document.getElementById('allPredictionsSection');
+    const grid = document.getElementById('allPredictionsGrid');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    
+    // 他のセクションを非表示
+    hideAllSections();
+    
+    // 全予想セクションを表示
+    section.style.display = 'block';
+    
+    // フィルターボタンのイベントリスナー
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterPredictions(btn.dataset.filter);
+        });
+    });
+    
+    // 初期表示（全て）
+    filterPredictions('all');
+}
+
+// 予想フィルタリング
+function filterPredictions(filter) {
+    const grid = document.getElementById('allPredictionsGrid');
+    let filteredPredictions = [...predictions];
+    
+    switch (filter) {
+        case 'region':
+            // 地域別でソート
+            filteredPredictions.sort((a, b) => {
+                return a.region.localeCompare(b.region);
+            });
+            break;
+        case 'school':
+            // 学校名でソート
+            filteredPredictions.sort((a, b) => a.school.localeCompare(b.school));
+            break;
+        default:
+            // 参加順でソート
+            filteredPredictions.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    }
+    
+    grid.innerHTML = filteredPredictions.map(p => {
+        const submitTime = new Date(p.timestamp).toLocaleString('ja-JP');
+        
+        return `
+            <div class="prediction-card">
+                <div class="prediction-header">
+                    <div class="prediction-user">${p.user}</div>
+                    <div class="prediction-time">${submitTime}</div>
+                </div>
+                <div class="prediction-school">${p.school}</div>
+                <div class="prediction-details">
+                    都道府県: ${p.pref}<br>
+                    地域: ${p.region}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// 全セクション非表示
+function hideAllSections() {
+    document.getElementById('predictionSection').style.display = 'none';
+    document.getElementById('predictionsList').style.display = 'none';
+    document.getElementById('participantsSection').style.display = 'none';
+    document.getElementById('allPredictionsSection').style.display = 'none';
+    document.getElementById('resultsSection').style.display = 'none';
 }
 
 // 結果表示
