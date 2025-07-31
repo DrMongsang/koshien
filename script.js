@@ -62,8 +62,10 @@ function initializeApp() {
     initializeJapanMap();
     updateUI();
     
-    // 管理者パネル表示（常時表示）
-    document.getElementById('adminPanel').style.display = 'block';
+    // 管理者パネル表示（たかしユーザーのみ）
+    if (currentUser === 'たかし') {
+        document.getElementById('adminPanel').style.display = 'block';
+    }
 }
 
 // イベントリスナー設定
